@@ -1,4 +1,5 @@
 #include "BufferedReader.hpp"
+#include "hash.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
@@ -15,11 +16,10 @@ struct HashSet {
 	/// An entry inside the hash table
 	struct Entry {
 		int64_t hash;
-		const char* start;
-		const char* end;
-		Entry() : hash(0),start(nullptr),end(nullptr) {}
-		void setDeleted() { start=nullptr; }
-		bool isDeleted() const { return start==nullptr; }
+		StringRef word;
+		Entry() : hash(0),word(nullptr,0) {}
+		void setDeleted() { word=StringRef(nullptr,0); }
+		bool isDeleted() const { return word.length()==0; }
 	};
 
 	/// Sizes
@@ -51,30 +51,27 @@ struct HashSet {
 	}
 
 	/// Insert a kvp into the hash table
-	bool insert(const char* start, const char* end) {
-		auto hash=std::hash<std::string>()(std::string(start,std::distance(start,end)));
+	bool insert(StringRef(word)) {
+		auto hash=Crc32Hash()(word);
 		auto slot=hash&mask;
 		Entry* e = &table[slot];
 		if (!e->isDeleted()) do {
 		    slot = (slot + 1) & mask;
 		    e=&table[slot];
 		} while(!e->isDeleted());
-		e->start=start;
-		e->end=end;
+		e->word=word;
 		e->hash=hash;
 		++size;
 		return true;
 	}
 
 	/// Find an element by key
-	bool find(const char* start, const char* end) {
-		auto len=std::distance(start,end);
-		auto hash=std::hash<std::string>()(std::string(start,std::distance(start,end)));
+	bool find(StringRef word) {
+		auto hash=Crc32Hash()(word);
 	    auto slot=hash&mask;
 	    Entry* e = &table[slot];
 	    if (!e->isDeleted()) do {
-	    	auto len2=std::distance(e->start,e->end);
-	        if (e->hash == hash && len==len2 && memcmp(start,e->start,len) == 0) return true;
+	        if (e->hash == hash && e->word == word) return true;
 	        slot = (slot + 1) & mask;
 	        e=&table[slot];
 	    } while(!e->isDeleted());
@@ -97,7 +94,7 @@ int main(int argc,char* argv[]) {
 		const char* wordStart=start;
 		for (; start != limit && *start != '\n'; ++start);
 		const char* wordEnd=start;
-		entries.insert(wordStart,wordEnd);
+		entries.insert(StringRef(wordStart,std::distance(wordStart,wordEnd)));
 	}
 
 	// Read input and probe
@@ -109,7 +106,7 @@ int main(int argc,char* argv[]) {
 		std::string word(wordBuffer,l);
 		std::string lword = word;
 		std::transform(lword.begin(), lword.end(), lword.begin(), ::tolower);
-		if (entries.find(lword.c_str(),lword.c_str()+lword.length())) {
+		if (entries.find(StringRef(lword.c_str(),lword.length()))) {
 			std::cout << word;
 		} else {
 			std::cout << "<" << word << ">";
