@@ -6,16 +6,26 @@
 #include <unordered_set>
 
 
+std::vector<char> dict;
+
+
+
+
+
 int main(int argc,char* argv[]) {
 	std::string path = (argc > 1) ? argv[1] : "/usr/share/dict/words";
 
+	// Read dictionary into memory
+	std::ifstream f(path);
+	dict.insert(dict.end(),std::istreambuf_iterator<char>(f),std::istreambuf_iterator<char>());
+
 	// Read dictionary
 	std::unordered_set<std::string> entries;
-	std::ifstream f(path);
-	std::string lword;
-	while (std::getline(f,lword)) {
-		//std::transform(lword.begin(), lword.end(), lword.begin(), ::tolower);
-		entries.insert(lword);
+	for (const char* start=dict.data(), *limit=dict.data()+dict.size(); start!=limit; ++start) {
+		const char* wordStart=start;
+		for (; start != limit && *start != '\n'; ++start);
+		const char* wordEnd=start;
+		entries.insert(std::string(wordStart, std::distance(wordStart,wordEnd)));
 	}
 
 	// Read input and probe
@@ -38,21 +48,3 @@ int main(int argc,char* argv[]) {
 	}
 	std::cout.flush();
 }
-
-
-
-
-
-/*path = ARGV.length > 0 ? ARGV[0] : '/usr/share/dict/words'
-entries = File.read(path).split("\n")
-
-contents = $stdin.read
-output = contents.gsub(/[^ \n]+/) do |word|
-  if entries.include?(word.downcase)
-    word
-  else
-    "<#{word}>"
-  end
-end
-print output
-*/
