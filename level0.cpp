@@ -10,6 +10,8 @@
 // Memory for the dictionary content
 std::vector<char> dict;
 
+// Hash capacity
+static const int64_t HashSize = 524288; // Must be power of two
 
 // Hash Index
 struct HashSet {
@@ -28,7 +30,7 @@ struct HashSet {
 	int64_t mask;
 	int64_t exp;
 	/// The actual hash table
-	std::vector<Entry> table;
+	Entry table[HashSize];
 
 	/// Constructor
 	HashSet(int64_t capacity) {
@@ -42,7 +44,7 @@ struct HashSet {
 	    exp = ceil(log(capacity)/log(2));
 	    mask = pow(2,exp)-1;
 	    this->capacity=mask+1;
-	    table.resize(this->capacity);
+	    //table.resize(this->capacity);
 	}
 
 	  /// Destructor
