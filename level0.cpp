@@ -39,7 +39,7 @@ struct HashSet {
 
 	void init(int64_t capacity) {
 	    size=0;
-	    exp = ceil(log(capacity)/log(2))+2;
+	    exp = ceil(log(capacity)/log(2));
 	    mask = pow(2,exp)-1;
 	    this->capacity=mask+1;
 	    table.resize(this->capacity);
@@ -47,7 +47,7 @@ struct HashSet {
 
 	  /// Destructor
 	~HashSet() {
-	    std::cout << size << " " << capacity << std::endl;
+	    //std::cout << size << " " << capacity << std::endl;
 	}
 
 	/// Insert a kvp into the hash table
