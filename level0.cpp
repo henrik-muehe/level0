@@ -47,7 +47,7 @@ struct HashSet {
 
 	  /// Destructor
 	~HashSet() {
-	    //std::cout << size <<" "<< capacity << std::endl;
+	    std::cout << size << " " << capacity << std::endl;
 	}
 
 	/// Insert a kvp into the hash table
