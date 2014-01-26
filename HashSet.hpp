@@ -4,6 +4,7 @@
 #include "StringRef.hpp"
 #include <cmath>
 #include <fstream>
+#include <iostream>
 
 
 // Hash capacity
@@ -14,11 +15,11 @@ struct HashSet {
 	/// An entry inside the hash table
 	struct Entry {
 		int64_t hash;
-		int64_t length;
-		char worddata[30];
-		Entry() : hash(0),length(0) {}
-		void setDeleted() { length=0; }
-		bool isDeleted() const { return length==0; }
+		//int64_t length;
+		//char worddata[24];
+		Entry() : hash(0) {}
+		void setDeleted() { hash=0; }
+		bool isDeleted() const { return hash==0; }
 	};
 
 	/// Sizes
@@ -38,6 +39,9 @@ struct HashSet {
 
 	void init(int64_t capacity) {
 	    size=0;
+	    std::cout << capacity << std::endl;
+	    std::cout << log(capacity) << std::endl;
+	    std::cout << log(2) << std::endl;
 	    exp = ceil(log(capacity)/log(2));
 	    mask = pow(2,exp)-1;
 	    this->capacity=mask+1;
@@ -59,8 +63,8 @@ struct HashSet {
 		    slot = (slot + 1) & mask;
 		    e=&table[slot];
 		} while(!e->isDeleted());
-		memcpy(e->worddata,word.data(),word.length());
-		e->length=word.length();
+		//memcpy(e->worddata,word.data(),word.length());
+		//e->length=word.length();
 		e->hash=hash;
 		++size;
 		return true;
@@ -72,7 +76,7 @@ struct HashSet {
 	    auto slot=hash&mask;
 	    const Entry* e = &table[slot];
 	    if (!e->isDeleted()) do {
-	        if (e->hash == hash && StringRef(e->worddata,e->length) == word) return true;
+	        if (e->hash == hash /* && StringRef(e->worddata,e->length) == word*/) return true;
 	        slot = (slot + 1) & mask;
 	        e=&table[slot];
 	    } while(!e->isDeleted());
