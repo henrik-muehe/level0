@@ -14,7 +14,7 @@ static const int64_t HashSize = 524288; // Must be power of two
 struct HashSet {
 	/// An entry inside the hash table
 	struct Entry {
-		int64_t hash;
+		int32_t hash;
 		//int64_t length;
 		//char worddata[24];
 		Entry() : hash(0) {}
