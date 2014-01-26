@@ -3,7 +3,7 @@
 
 # Build hash
 g++ -I. -march=native -std=c++11 -O3 -g -o hashdumper hashdumper.cpp
-./hashdumper test/data/words-6b898d7c48630be05b72b3ae07c5be6617f90d8e hashset.bin
+./hashdumper dict.txt hashset.bin
 objcopy -I binary -O elf64-x86-64 -B i386:x86-64 hashset.bin hashset.o
 
 # Build prober
