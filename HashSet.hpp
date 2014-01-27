@@ -39,9 +39,6 @@ struct HashSet {
 
 	void init(int64_t capacity) {
 	    size=0;
-	    std::cout << capacity << std::endl;
-	    std::cout << log(capacity) << std::endl;
-	    std::cout << log(2) << std::endl;
 	    exp = ceil(log(capacity)/log(2));
 	    mask = pow(2,exp)-1;
 	    this->capacity=mask+1;
