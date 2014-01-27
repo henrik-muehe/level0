@@ -8,4 +8,4 @@ objcopy -I binary -O elf64-x86-64 -B i386:x86-64 hashset.bin hashset.o
 
 # Build prober
 g++ -I. -march=native -std=c++11 -O3 -g -o level0 level0.cpp hashset.o
-clang -O3 -o level0 -g -march=native level0.c hashset.o 
+gcc -O3 -o level0 -g -march=native level0.c hashset.o 
