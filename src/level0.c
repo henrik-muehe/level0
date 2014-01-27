@@ -69,14 +69,14 @@ int HashSet_find(HashSet* h,const char* word,size_t len) {
     return false;
 }
 
-extern char _binary_hashset_bin_start;
-extern char _binary_hashset_bin_end;
-extern char _binary_hashset_bin_size;
+extern char _binary_bin_hashset_bin_start;
+extern char _binary_bin_hashset_bin_end;
+extern char _binary_bin_hashset_bin_size;
 
 #define BufferSize (4096*32)
 
 int main(int argc,char *argv[]) {
-	HashSet* h = (HashSet*)(&_binary_hashset_bin_start);
+	HashSet* h = (HashSet*)(&_binary_bin_hashset_bin_start);
 
 	char buffer[BufferSize+1];
 	char lowerWordBuffer[64];

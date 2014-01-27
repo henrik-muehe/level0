@@ -1,16 +1,24 @@
 all: level0
 
-hashdumper: HashDumper.cpp *.hpp
-	g++ -march=native -std=c++11 -O3 -g -o $@ $<
+bin/hashdumper: src/HashDumper.cpp $(wildcard include/*.hpp)
+	mkdir -p bin
+	g++ -I include -march=native -std=c++11 -O3 -g -o $@ $<
 
-hashset.bin: hashdumper dict.txt
-	./hashdumper dict.txt hashset.bin
+bin/hashset.bin: bin/hashdumper data/dict.txt
+	mkdir -p bin
+	./bin/hashdumper data/dict.txt bin/hashset.bin
 
-hashset.o: hashset.bin hashdumper
+bin/hashset.o: bin/hashset.bin bin/hashdumper
+	mkdir -p bin
 	objcopy -I binary -O elf64-x86-64 -B i386:x86-64 $< $@
 
-level0: level0.c hashdumper hashset.o
-	gcc -march=native -O3 -g -o $@ hashset.o $<
+level0: src/level0.c bin/hashdumper bin/hashset.o
+	mkdir -p bin
+	gcc -I include -march=native -O3 -g -o $@ bin/hashset.o $<
+
+#level0: src/level0.cpp bin/hashdumper bin/hashset.o
+#	mkdir -p bin
+#	g++ -I include -march=native -O3 -g -o $@ bin/hashset.o $<
 
 clean:
-	rm -rf *.data* level0 hashdumper hashset.o hashset.bin *.o *.dSYM
+	rm -rf *.data* bin
