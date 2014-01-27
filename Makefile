@@ -2,7 +2,7 @@ all: level0
 
 bin/hashdumper: src/HashDumper.cpp $(wildcard include/*.hpp)
 	mkdir -p bin
-	g++ -I include -march=native -std=c++11 -O3 -g -o $@ $<
+	g++ -I include -msse4.2  -std=c++11 -O3 -g -o $@ $<
 
 bin/hashset.bin: bin/hashdumper data/dict.txt
 	mkdir -p bin
@@ -14,11 +14,11 @@ bin/hashset.o: bin/hashset.bin bin/hashdumper
 
 level0: src/level0.c bin/hashdumper bin/hashset.o
 	mkdir -p bin
-	gcc -I include -march=native -O3 -g -o $@ bin/hashset.o $<
+	gcc -I include -msse4.2 -O3 -g -o $@ bin/hashset.o $<
 
 #level0: src/level0.cpp bin/hashdumper bin/hashset.o
 #	mkdir -p bin
-#	g++ -I include -march=native -O3 -g -o $@ bin/hashset.o $<
+#	g++ -I include -msse4.2 -O3 -g -o $@ bin/hashset.o $<
 
 clean:
 	rm -rf *.data* bin
